@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>French Email Optimizer</title>
+    <style>
+        :root { --bg: #f4f7f6; --panel: #ffffff; --text: #333; --accent: #0066cc; --border: #d1d5db; --success: #28a745; }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: var(--bg); color: var(--text); padding: 40px; }
+        
+        /* New Headline Styles */
+        .page-header { max-width: 1200px; margin: 0 auto 30px auto; padding: 0 20px; }
+        .page-header h1 { color: var(--accent); margin: 0 0 10px 0; font-size: 2rem; }
+        .page-header p { color: #666; font-size: 1.1rem; margin: 0; }
+
+        .wrapper { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; max-width: 1200px; margin: 0 auto; }
+        .panel { background: var(--panel); padding: 25px; border-radius: 12px; border: 1px solid var(--border); box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+        h2 { margin-bottom: 25px; color: var(--accent); }
+        h3 { font-size: 0.9rem; margin: 15px 0 8px 0; color: #666; text-transform: uppercase; letter-spacing: 0.05em; }
+        textarea { width: 100%; height: 400px; background: #fff; color: #333; border: 1px solid var(--border); border-radius: 6px; padding: 12px; box-sizing: border-box; font-family: monospace; font-size: 14px; outline: none; }
+        #preview { width: 100%; min-height: 100px; background: #f9fafb; border: 1px solid var(--border); border-radius: 6px; padding: 12px; box-sizing: border-box; font-size: 15px; margin-bottom: 20px; }
+        #clean { height: 150px; background: #f9fafb; }
+        .btn-group { display: flex; gap: 10px; margin-top: 20px; }
+        button { padding: 12px 24px; border: none; border-radius: 6px; font-weight: 600; cursor: pointer; transition: 0.2s; }
+        .btn-primary { background: var(--accent); color: white; }
+        .btn-primary:hover { background: #0052a3; }
+        .btn-secondary { background: #e5e7eb; color: #333; }
+        .btn-secondary:hover { background: #d1d5db; }
+        #notification { position: fixed; top: 20px; right: 20px; padding: 12px 24px; background: var(--success); color: white; border-radius: 6px; opacity: 0; transition: 0.3s; pointer-events: none; }
+        #notification.show { opacity: 1; }
+    </style>
+</head>
+<body>
+    <div id="notification">Copied to clipboard! ✅</div>
+
+    <header class="page-header">
+        <h1>French Email Optimizer</h1>
+        <p>Automated typography & character formatting for Canadian French marketing assets.</p>
+    </header>
+
+    <div class="wrapper">
+        <div class="panel">
+            <h2>Input</h2>
+            <textarea id="raw" placeholder="Paste French text here..."></textarea>
+            <div class="btn-group">
+                <button class="btn-primary" onclick="process()">Convert & Copy</button>
+                <button class="btn-secondary" onclick="clearAll()">Clear</button>
+            </div>
+        </div>
+        <div class="panel">
+            <h2>Output Preview</h2>
+            <h3>Rendered Preview</h3>
+            <div id="preview">Output preview will appear here...</div>
+            <h3>Clean HTML Code</h3>
+            <textarea id="clean" readonly></textarea>
+        </div>
+    </div>
+    <script>
+        function showNotif() { let n = document.getElementById('notification'); n.classList.add('show'); setTimeout(() => n.classList.remove('show'), 2000); }
+        function process() {
+            let t = document.getElementById('raw').value;
+            t = t.replace(/\s*['’]\s*/g, '&rsquo;');
+            t = t.replace(/[\u00A0\u202F\u2009]/g, ' ');
+            t = t.replace(/\s*:/g, '&nbsp;:');
+            t = t.replace(/(\d+)(er|re|r)\b/gi, '$1<sup>$2</sup>');
+            t = t.replace(/\b(D)(r)(e?)\b/g, '$1<sup>$2$3</sup>');
+            const m = {'é':'&eacute;','É':'&Eacute;','à':'&agrave;','À':'&Agrave;','è':'&egrave;','È':'&Egrave;','ù':'&ugrave;','Ù':'&Ugrave;','â':'&acirc;','Â':'&Acirc;','ê':'&ecirc;','Ê':'&Ecirc;','î':'&icirc;','Î':'&Icirc;','ô':'&ocirc;','Ô':'&Ocirc;','û':'&ucirc;','Û':'&Ucirc;','ç':'&ccedil;','Ç':'&Ccedil;','ë':'&euml;','Ë':'&Euml;','ï':'&iuml;','Ï':'&Iuml;','ü':'&uuml;','Ü':'&Uuml;','æ':'&aelig;','Æ':'&AElig;','œ':'&oelig;','Œ':'&OElig;','®':'&reg;','MD':'<sup>MD</sup>''MC':'<sup>MC</sup>'};
+            for(const k in m) { t = t.split(k).join(m[k]); }
+            document.getElementById('clean').value = t;
+            document.getElementById('preview').innerHTML = t;
+            document.getElementById('clean').select();
+            document.execCommand('copy');
+            showNotif();
+        }
+        function clearAll() { document.getElementById('raw').value = ''; document.getElementById('clean').value = ''; document.getElementById('preview').innerHTML = 'Output preview will appear here...'; }
+    </script>
+</body>
+</html>
